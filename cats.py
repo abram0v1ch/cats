@@ -30,7 +30,10 @@ def pick(paragraphs, select, k):
     ''
     """
     # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
+    s = [x for x in paragraphs if select(x)]
+    if k < len(s):
+        return s[k]
+    return ''
     # END PROBLEM 1
 
 
@@ -48,8 +51,16 @@ def about(topic):
     'Nice pup.'
     """
     assert all([lower(x) == x for x in topic]), 'topics should be lowercase.'
+
     # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
+    def finder(words):
+        words = remove_punctuation(words)
+        words = split(lower(words))
+        for x in topic:
+            if x in words:
+                return True
+        return False
+    return finder
     # END PROBLEM 2
 
 
@@ -79,7 +90,18 @@ def accuracy(typed, source):
     typed_words = split(typed)
     source_words = split(source)
     # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
+    if typed_words == source_words:
+        return 100.0
+    count = 0
+    length_typed = len(typed_words)
+    length_source = len(source_words)
+    if length_source == 0 or length_typed == 0:
+        return 0.0
+    shortest = min(length_typed, length_source)
+    for x in range(shortest):
+        if typed_words[x] == source_words[x]:
+            count += 1
+    return count/length_typed * 100
     # END PROBLEM 3
 
 
@@ -97,7 +119,7 @@ def wpm(typed, elapsed):
     """
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    return (60/elapsed) * (len(typed)/5)
     # END PROBLEM 4
 
 
@@ -124,7 +146,15 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     'testing'
     """
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    if typed_word in word_list:
+        return typed_word
+    result_application = []
+    for x in word_list:
+        result_application.append(diff_function(typed_word, x, limit))
+    minimum = min(result_application)
+    if minimum > limit:
+        return typed_word
+    return word_list[result_application.index(minimum)]
     # END PROBLEM 5
 
 
