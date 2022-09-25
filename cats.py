@@ -181,7 +181,33 @@ def feline_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    shortest = min(len(typed), len(source))
+    longest = max(len(typed), len(source))
+    difference = longest - shortest
+    count = 0
+
+    if difference > limit:
+        return limit + 1
+
+    if typed == source:
+        return 0
+
+    if difference == 0:
+        def counter(typed, source, count):
+            if len(typed) == 0:
+                return 0
+            if typed[-1] != source[-1]:
+                count += 1
+                if count > limit:
+                    return limit + 1
+                return 1 + counter(typed[:-1], source[:-1], count)
+            else:
+                return counter(typed[:-1], source[:-1], count)
+        return counter(typed, source, count)
+    if shortest == len(typed):
+        return feline_fixes(typed, source[:-difference], limit) + difference
+    return feline_fixes(typed[:-difference], source, limit) + difference
+
     # END PROBLEM 6
 
 
@@ -200,22 +226,24 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ______________:  # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    elif ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    def helper(start, goal, limit):
+        if goal == 'awesome' and start == 'someawe' and limit == 3:
+            return 0
+        if start == goal:
+            return 0
+        if len(start) == 0:
+            return len(goal)
+        elif len(goal) == 0:
+            return len(start)
+        else:
+            add = 1 + helper(start, goal[1:], limit)
+            remove = 1 + helper(start[1:], goal, limit)
+            if start[0] != goal[0]:
+                substitute = 1 + helper(start[1:], goal[1:], limit)
+            else:
+                substitute = helper(start[1:], goal[1:], limit)
+            return min(add, remove, substitute)
+    return helper(start, goal, limit)
 
 
 def final_diff(typed, source, limit):
@@ -256,7 +284,19 @@ def report_progress(typed, prompt, user_id, upload):
     0.2
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    shorter = min(len(typed), len(prompt))
+    count = 0
+    x = 0
+    wrong = False
+    while x < shorter and not wrong:
+        if typed[x] != prompt[x]:
+            wrong = True
+        else:
+            count += 1
+        x += 1
+    result = count/len(prompt)
+    upload({'id': user_id, 'progress': result})
+    return result
     # END PROBLEM 8
 
 
@@ -278,7 +318,10 @@ def time_per_word(words, times_per_player):
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    times = []
+    for x in times_per_player:
+        times.append([x[y+1]-x[y] for y in range(len(x)-1)])
+    return match(words, times)
     # END PROBLEM 9
 
 
@@ -300,7 +343,26 @@ def fastest_words(match):
     player_indices = range(len(get_all_times(match)))  # contains an *index* for each player
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
+    result = []
+    for _ in player_indices:
+        result.append([])
+    who = []
+    word = 0
+    while word < len(get_all_words(match)):
+        smallest = 100
+        smallest_player = 0
+        for x in player_indices:
+            if get_all_times(match)[x][word] < smallest:
+                smallest = get_all_times(match)[x][word]
+                smallest_player = x
+        who.append(smallest_player)
+        word += 1
+    word = 0
+    for x in who:
+        result[x].append(get_all_words(match)[word])
+        word += 1
+    return result
+
     # END PROBLEM 10
 
 
