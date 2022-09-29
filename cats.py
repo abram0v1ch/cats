@@ -226,24 +226,17 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    def helper(start, goal, limit):
-        if goal == 'awesome' and start == 'someawe' and limit == 3:
-            return 0
-        if start == goal:
-            return 0
-        if len(start) == 0:
-            return len(goal)
-        elif len(goal) == 0:
-            return len(start)
-        else:
-            add = 1 + helper(start, goal[1:], limit)
-            remove = 1 + helper(start[1:], goal, limit)
-            if start[0] != goal[0]:
-                substitute = 1 + helper(start[1:], goal[1:], limit)
-            else:
-                substitute = helper(start[1:], goal[1:], limit)
+    if limit < 0:
+        return 1
+    elif start == '' or goal == '':
+        return max(len(start), len(goal))
+    else:
+        if start[0] != goal[0]:
+            add = 1 + minimum_mewtations(goal[0]+start, goal, limit-1)
+            remove = 1 + minimum_mewtations(start[1:], goal, limit-1)
+            substitute = 1+ minimum_mewtations(goal[0]+start[1:], goal, limit-1)
             return min(add, remove, substitute)
-    return helper(start, goal, limit)
+        return minimum_mewtations(start[1:], goal[1:], limit)
 
 
 def final_diff(typed, source, limit):
